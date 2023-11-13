@@ -74,7 +74,7 @@ const Register = () => {
 
         <div className="flex flex-col lg:flex-row justify-between gap-4 items-center w-[80%] mx-auto mb-4 lg:px-4 lg:py-2">
           <p>Have registered account? </p>
-          <Link to="/login" className="text-blue-500">
+          <Link to="/" className="text-blue-500">
             Login
           </Link>
         </div>
