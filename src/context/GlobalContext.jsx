@@ -70,7 +70,6 @@ export const GlobalProvider = (props) => {
 
   const handleInput = (event) => {
     let value = event.target.value;
-    console.log(value)
     setInput({ ...input, [event.target.name]: value });
   };
 
