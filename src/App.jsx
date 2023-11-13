@@ -9,7 +9,7 @@ import Register from "./components/register";
 function App() {
   const LoginRoute = (props) => {
     if (Cookies.get("token") !== undefined) {
-      return <Navigate to={"/"} />;
+      return <Navigate to={"/todos"} />;
     } else if (Cookies.get("token") === undefined) {
       return props.children;
     }
@@ -17,7 +17,7 @@ function App() {
 
   const CheckAuth = (props) => {
     if (Cookies.get("token") === undefined) {
-      return <Navigate to={"/login"} />;
+      return <Navigate to={"/"} />;
     } else if (Cookies.get("token") !== undefined) {
       return props.children;
     }
@@ -28,22 +28,6 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={
-              <CheckAuth>
-                <TodoList />
-              </CheckAuth>
-            }
-          />
-          <Route
-            path="/:id"
-            element={
-              <CheckAuth>
-                <TodoList />
-              </CheckAuth>
-            }
-          />
-          <Route
-            path="/login"
             element={
               <LoginRoute>
                 <Login />
@@ -56,6 +40,22 @@ function App() {
               <LoginRoute>
                 <Register />
               </LoginRoute>
+            }
+          />
+          <Route
+            path="/todos"
+            element={
+              <CheckAuth>
+                <TodoList />
+              </CheckAuth>
+            }
+          />
+          <Route
+            path="/todos/:id"
+            element={
+              <CheckAuth>
+                <TodoList />
+              </CheckAuth>
             }
           />
         </Routes>

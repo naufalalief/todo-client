@@ -10,7 +10,7 @@ export default function TodoList() {
   const [click, setClick] = useState(false);
   const { states, eventHandlers } = useContext(GlobalContext);
   const { id } = useParams();
-  const { todos, input, setInput, total, activeFilter, currentId, isEditing } =
+  const { todos, input, setInput, total, activeFilter, currentId, isEditing , user } =
     states;
   const {
     handleInput,
@@ -22,7 +22,7 @@ export default function TodoList() {
     handleFilter,
     handleLogout,
   } = eventHandlers;
-  const name = Cookies.get("name");
+    const { name } = user;
 
   useEffect(() => {
     if (isEditing) {
@@ -43,13 +43,14 @@ export default function TodoList() {
     }
     if (id !== undefined) {
       axios
-        .get(`http://localhost:3000/${id}`, {
+        .get(`https://lazy-blue-bullfrog-veil.cyclic.app/todos/${id}`, {
           headers: {
             Authorization: "Bearer " + Cookies.get("token"),
           },
         })
         .then((response) => {
           let data = response.data.data;
+          console.log(data)
           setInput({ name: data.name });
         })
         .catch((error) => {
@@ -58,7 +59,7 @@ export default function TodoList() {
     } else {
       setInput({ name: "" });
     }
-  }, [setInput, id, isEditing]);
+  }, [setInput, id, isEditing, user]);
 
   return (
     <>
@@ -96,8 +97,8 @@ export default function TodoList() {
             <input
               type="text"
               className="border rounded-md px-4 py-2"
-              name="name"
-              value={input.name}
+              name="todoName"
+              value={input.todoName}
               onChange={handleInput}
             />
 
@@ -121,12 +122,12 @@ export default function TodoList() {
 
         <nav className="flex justify-center items-center gap-10 my-4 border lg:rounded-md py-2 px-4 mx-2 lg:mx-96">
           <button
-            disabled={isEditing}
+            disabled={isEditing} 
             onClick={handleFilter}
             value={"all"}
             className={`px-4 py-2 rounded-md ${
               activeFilter === "all" ? "bg-sky-200" : ""
-            }`}
+            } ${isEditing ? "cursor-not-allowed" : ""}`}
           >
             All
           </button>
@@ -162,7 +163,7 @@ export default function TodoList() {
               todos.map((res, index) => {
                 return (
                   <li
-                    key={res.id}
+                    key={index}
                     className="flex justify-between items-center m-2 border border-black px-4 py-2"
                   >
                     <div key={res.id} className="flex gap-2">

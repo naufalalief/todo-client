@@ -16,41 +16,70 @@ export const GlobalProvider = (props) => {
   const [token, setToken] = useState();
   const [isEditing, setIsEditing] = useState(false);
   const [input, setInput] = useState({ name: "" });
-
+  const [user, setUser] = useState({});
   useEffect(() => {
     if (Cookies.get("token") !== undefined) {
       setToken(Cookies.get("token"));
     }
     if (fetchStatus === true) {
-      axios
-        .get("http://localhost:3000/todos", {
+      todolist();
+    }
+    getUser();
+    setFetchStatus(false);
+  }, [fetchStatus, setFetchStatus, currentId, navigate]);
+
+  const todolist = async () => {
+    await axios
+      .get("https://lazy-blue-bullfrog-veil.cyclic.app/todos", {
+        headers: {
+          Authorization: "Bearer " + Cookies.get("token"),
+        },
+      })
+      .then((response) => {
+        setTodos(response.data.data);
+        setTotal(response.data.data.length);
+        console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const getUser = async () => {
+    const id = Cookies.get("id");
+    console.log(id);
+    const token = Cookies.get("token");
+
+    if (id && token) {
+      await axios
+        .get(`https://lazy-blue-bullfrog-veil.cyclic.app/users/${id}`, {
           headers: {
-            Authorization: "Bearer " + Cookies.get("token"),
+            Authorization: "Bearer " + token,
           },
         })
         .then((response) => {
-          setTodos(response.data.data);
-          setTotal(response.data.data.length);
           console.log(response.data.data);
+          setUser(response.data.data);
         })
         .catch((error) => {
           console.log(error);
         });
+    } else {
+      console.log("ID or token is not available in cookies");
     }
-    setFetchStatus(false);
-  }, [fetchStatus, setFetchStatus, currentId, navigate]);
+  };
 
   const handleInput = (event) => {
     let value = event.target.value;
+    console.log(value)
     setInput({ ...input, [event.target.name]: value });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsEditing(false);
-    let { name } = input;
+    let { todoName } = input;
     let kukis = Cookies.get("token");
-    if (name.trim() === "") {
+    if (todoName.trim() === "") {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -62,8 +91,8 @@ export const GlobalProvider = (props) => {
     if (currentId === -1) {
       axios
         .post(
-          "http://localhost:3000/todos",
-          { name },
+          "https://lazy-blue-bullfrog-veil.cyclic.app/todos",
+          { name: todoName },
           {
             headers: {
               Authorization: "Bearer " + kukis,
@@ -93,8 +122,8 @@ export const GlobalProvider = (props) => {
     } else {
       axios
         .put(
-          `http://localhost:3000/todos/${currentId}`,
-          { name, isdone: false },
+          `https://lazy-blue-bullfrog-veil.cyclic.app/todos/${currentId}`,
+          { name: todoName, isdone: false },
           {
             headers: {
               Authorization: "Bearer " + kukis,
@@ -114,7 +143,7 @@ export const GlobalProvider = (props) => {
           console.log(error);
         });
     }
-    setInput({ name: "" });
+    setInput({ todoName: "" });
     setCurrentId(-1);
     console.log(input);
   };
@@ -151,7 +180,7 @@ export const GlobalProvider = (props) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:3000/todos/${id}`, {
+          .delete(`https://lazy-blue-bullfrog-veil.cyclic.app/todos/${id}`, {
             headers: {
               Authorization: "Bearer " + kukis,
             },
@@ -183,16 +212,16 @@ export const GlobalProvider = (props) => {
         title: "Oops...",
         text: "You are not logged in!",
       }).then(() => {
-        navigate("/login");
+        navigate("/");
       });
     }
     setCurrentId(id);
-    navigate(`/${id}`);
+    navigate(`todos/${id}`);
     console.log(id);
   };
   const getActiveTodos = () => {
     axios
-      .get("http://localhost:3000/todos/", {
+      .get("https://lazy-blue-bullfrog-veil.cyclic.app/todos/", {
         headers: {
           Authorization: "Bearer " + Cookies.get("token"),
         },
@@ -207,7 +236,7 @@ export const GlobalProvider = (props) => {
 
   const getCompletedTodos = () => {
     axios
-      .get("http://localhost:3000/todos/", {
+      .get("https://lazy-blue-bullfrog-veil.cyclic.app/todos/", {
         headers: {
           Authorization: "Bearer " + Cookies.get("token"),
         },
@@ -225,7 +254,7 @@ export const GlobalProvider = (props) => {
     const name = todos.find((todo) => todo.id === id).name;
     axios
       .put(
-        `http://localhost:3000/todos/${id}`,
+        `https://lazy-blue-bullfrog-veil.cyclic.app/todos/${id}`,
         { name: name, isdone: isdone },
         {
           headers: {
@@ -239,14 +268,14 @@ export const GlobalProvider = (props) => {
           Swal.fire({
             icon: "success",
             title: "Success!",
-            text: `Todo removed from completed!`,
+            text: `Todo '${name}' has been ${isdone ? "marked as complete" : "marked as incomplete"}!`,
           });
           getCompletedTodos();
         } else if (activeFilter === "active") {
           Swal.fire({
             icon: "success",
             title: "Success!",
-            text: `Todo added to completed!`,
+            text: `Todo '${name}' has been ${isdone ? "marked as complete" : "marked as incomplete"}!`,
           });
           getActiveTodos();
         } else {
@@ -293,7 +322,7 @@ export const GlobalProvider = (props) => {
     event.preventDefault();
     let { name, username, email, password } = input;
     axios
-      .post("http://localhost:3000/auth/register", {
+      .post("https://lazy-blue-bullfrog-veil.cyclic.app/auth/register", {
         name,
         username,
         email,
@@ -315,7 +344,7 @@ export const GlobalProvider = (props) => {
       })
       .finally(() => {
         setInput({ name: "", username: "", email: "", password: "" });
-        navigate("/login");
+        navigate("/");
       });
   };
 
@@ -323,19 +352,19 @@ export const GlobalProvider = (props) => {
     event.preventDefault();
     let { username, password } = input;
     axios
-      .post("http://localhost:3000/auth/login", {
+      .post("https://lazy-blue-bullfrog-veil.cyclic.app/auth/login", {
         username,
         password,
       })
       .then((res) => {
         console.log(res);
         let data = res.data;
-        let { token, username, name } = data;
+        let { token, username, id, id_level } = data;
         Cookies.set("token", token, { expires: 1 });
         Cookies.set("username", username, { expires: 1 });
-        Cookies.set("name", name, { expires: 1 });
+        Cookies.set("id", id, { expires: 1 });
+        Cookies.set("id_level", id_level, { expires: 1 });
         console.log(res.data.username);
-        navigate("/");
         Swal.mixin({
           toast: true,
           position: "bottom-end",
@@ -356,6 +385,8 @@ export const GlobalProvider = (props) => {
           icon: "info",
           confirmButtonText: "OK",
         });
+        todolist();
+        navigate("/todos");
       })
       .catch((error) => {
         Swal.mixin({
@@ -385,15 +416,17 @@ export const GlobalProvider = (props) => {
       if (result.isConfirmed) {
         Cookies.remove("token");
         Cookies.remove("username");
+        Cookies.remove("id");
+        Cookies.remove("id_level");
         setToken(undefined);
         Swal.fire("Logged Out!", "You have been logged out.", "success");
-        navigate("/login");
+        navigate("/");
       } else {
         Swal.fire("Cancelled!", "You are still logged in!", "error");
       }
     });
   };
-  
+
   let states = {
     todos,
     input,
@@ -403,6 +436,7 @@ export const GlobalProvider = (props) => {
     activeFilter,
     token,
     isEditing,
+    user,
     setInput,
     setTodos,
     setCurrentId,
@@ -411,6 +445,7 @@ export const GlobalProvider = (props) => {
     setActiveFilter,
     setToken,
     setIsEditing,
+    setUser,
   };
 
   let eventHandlers = {
