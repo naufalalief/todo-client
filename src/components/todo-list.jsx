@@ -43,7 +43,7 @@ export default function TodoList() {
     }
     if (id !== undefined) {
       axios
-        .get(`https://lazy-blue-bullfrog-veil.cyclic.app/todos/${id}`, {
+        .get(`https://bewildered-rose-cummerbund.cyclic.app/todos/${id}`, {
           headers: {
             Authorization: "Bearer " + Cookies.get("token"),
           },
