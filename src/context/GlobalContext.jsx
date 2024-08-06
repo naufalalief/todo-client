@@ -30,7 +30,7 @@ export const GlobalProvider = (props) => {
 
   const todolist = async () => {
     await axios
-      .get("https://bewildered-rose-cummerbund.cyclic.app/todos", {
+      .get("http://localhost:3000/todos", {
         headers: {
           Authorization: "Bearer " + Cookies.get("token"),
         },
@@ -51,7 +51,7 @@ export const GlobalProvider = (props) => {
 
     if (id && token) {
       await axios
-        .get(`https://bewildered-rose-cummerbund.cyclic.app/users/${id}`, {
+        .get(`http://localhost:3000/users/${id}`, {
           headers: {
             Authorization: "Bearer " + token,
           },
@@ -90,7 +90,7 @@ export const GlobalProvider = (props) => {
     if (currentId === -1) {
       axios
         .post(
-          "https://bewildered-rose-cummerbund.cyclic.app/todos",
+          "http://localhost:3000/todos",
           { name: todoName },
           {
             headers: {
@@ -121,7 +121,7 @@ export const GlobalProvider = (props) => {
     } else {
       axios
         .put(
-          `https://bewildered-rose-cummerbund.cyclic.app/todos/${currentId}`,
+          `http://localhost:3000/todos/${currentId}`,
           { name: todoName, isdone: false },
           {
             headers: {
@@ -179,7 +179,7 @@ export const GlobalProvider = (props) => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`https://bewildered-rose-cummerbund.cyclic.app/todos/${id}`, {
+          .delete(`http://localhost:3000/todos/${id}`, {
             headers: {
               Authorization: "Bearer " + kukis,
             },
@@ -220,7 +220,7 @@ export const GlobalProvider = (props) => {
   };
   const getActiveTodos = () => {
     axios
-      .get("https://bewildered-rose-cummerbund.cyclic.app/todos/", {
+      .get("http://localhost:3000/todos/", {
         headers: {
           Authorization: "Bearer " + Cookies.get("token"),
         },
@@ -235,7 +235,7 @@ export const GlobalProvider = (props) => {
 
   const getCompletedTodos = () => {
     axios
-      .get("https://bewildered-rose-cummerbund.cyclic.app/todos/", {
+      .get("http://localhost:3000/todos/", {
         headers: {
           Authorization: "Bearer " + Cookies.get("token"),
         },
@@ -253,7 +253,7 @@ export const GlobalProvider = (props) => {
     const name = todos.find((todo) => todo.id === id).name;
     axios
       .put(
-        `https://bewildered-rose-cummerbund.cyclic.app/todos/${id}`,
+        `http://localhost:3000/todos/${id}`,
         { name: name, isdone: isdone },
         {
           headers: {
@@ -267,14 +267,18 @@ export const GlobalProvider = (props) => {
           Swal.fire({
             icon: "success",
             title: "Success!",
-            text: `Todo '${name}' has been ${isdone ? "marked as complete" : "marked as incomplete"}!`,
+            text: `Todo '${name}' has been ${
+              isdone ? "marked as complete" : "marked as incomplete"
+            }!`,
           });
           getCompletedTodos();
         } else if (activeFilter === "active") {
           Swal.fire({
             icon: "success",
             title: "Success!",
-            text: `Todo '${name}' has been ${isdone ? "marked as complete" : "marked as incomplete"}!`,
+            text: `Todo '${name}' has been ${
+              isdone ? "marked as complete" : "marked as incomplete"
+            }!`,
           });
           getActiveTodos();
         } else {
@@ -321,7 +325,7 @@ export const GlobalProvider = (props) => {
     event.preventDefault();
     let { name, username, email, password } = input;
     axios
-      .post("https://bewildered-rose-cummerbund.cyclic.app/auth/register", {
+      .post("http://localhost:3000/auth/register", {
         name,
         username,
         email,
@@ -351,7 +355,7 @@ export const GlobalProvider = (props) => {
     event.preventDefault();
     let { username, password } = input;
     axios
-      .post("https://bewildered-rose-cummerbund.cyclic.app/auth/login", {
+      .post("http://localhost:3000/auth/login", {
         username,
         password,
       })

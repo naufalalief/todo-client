@@ -6,10 +6,11 @@ const Register = () => {
   const { eventHandlers } = useContext(GlobalContext);
   const { handleInput, handleRegister } = eventHandlers;
   return (
-    <div className="container-fluid my-20 lg:my-40 lg:w-[70vw] mx-auto font-mono">
+    <div className="container my-20 lg:my-40 w-full mx-auto font-mono">
       <div className="flex flex-col text-center mt-4 mb-2 mx-2 border lg:rounded-md lg:mx-96 ">
-        <h1 className="mt-10 mb-4 font-bold text-2xl">Login Page</h1>
+        <h1 className="mt-10 mb-4 font-bold text-2xl">Register Page</h1>
         <form
+          autoComplete="off"
           action=""
           className="flex flex-col gap-2 my-2 text-left"
           onSubmit={handleRegister}
@@ -22,7 +23,7 @@ const Register = () => {
               name="name"
               id="name"
               onChange={handleInput}
-              placeholder="Rimuru Tempest"
+              placeholder="Fullname"
             />
           </div>
 
@@ -34,7 +35,7 @@ const Register = () => {
               name="username"
               id="username"
               onChange={handleInput}
-              placeholder="rimurutempest"
+              placeholder="Username"
             />
           </div>
 
@@ -46,7 +47,7 @@ const Register = () => {
               name="email"
               id="email"
               onChange={handleInput}
-              placeholder="tempest.kingdom@official.com"
+              placeholder="Email@email.com"
             />
           </div>
 

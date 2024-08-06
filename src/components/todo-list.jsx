@@ -10,8 +10,16 @@ export default function TodoList() {
   const [click, setClick] = useState(false);
   const { states, eventHandlers } = useContext(GlobalContext);
   const { id } = useParams();
-  const { todos, input, setInput, total, activeFilter, currentId, isEditing , user } =
-    states;
+  const {
+    todos,
+    input,
+    setInput,
+    total,
+    activeFilter,
+    currentId,
+    isEditing,
+    user,
+  } = states;
   const {
     handleInput,
     handleSubmit,
@@ -22,7 +30,7 @@ export default function TodoList() {
     handleFilter,
     handleLogout,
   } = eventHandlers;
-    const { name } = user;
+  const { name } = user;
 
   useEffect(() => {
     if (isEditing) {
@@ -43,14 +51,14 @@ export default function TodoList() {
     }
     if (id !== undefined) {
       axios
-        .get(`https://bewildered-rose-cummerbund.cyclic.app/todos/${id}`, {
+        .get(`http://localhost:3000/todos/${id}`, {
           headers: {
             Authorization: "Bearer " + Cookies.get("token"),
           },
         })
         .then((response) => {
           let data = response.data.data;
-          console.log(data)
+          console.log(data);
           setInput({ name: data.name });
         })
         .catch((error) => {
@@ -87,10 +95,11 @@ export default function TodoList() {
         </div>
       </div>
 
-      <div className="container-fluid font-mono lg:w-[70vw] mx-auto">
+      <div className="container font-mono w-full mx-auto">
         <div className="flex flex-col justify-center items-center mt-2 mb-4 mx-2 border lg:rounded-md lg:mx-96 ">
           <h1 className="mt-10 mb-4 font-bold text-2xl">Whatcha Gonna Do?</h1>
           <form
+            autoComplete="off"
             onSubmit={handleSubmit}
             className="flex flex-col lg:flex-row gap-2 my-4"
           >
@@ -122,7 +131,7 @@ export default function TodoList() {
 
         <nav className="flex justify-center items-center gap-10 my-4 border lg:rounded-md py-2 px-4 mx-2 lg:mx-96">
           <button
-            disabled={isEditing} 
+            disabled={isEditing}
             onClick={handleFilter}
             value={"all"}
             className={`px-4 py-2 rounded-md ${
